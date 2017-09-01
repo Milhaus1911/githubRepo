@@ -36,16 +36,16 @@ class HomeScreen extends Component {
 		if(!this.state.connected){
 			return (
 				<View>
-					<View style = {styles.list}>
+					<View style= {styles.title}>
+						<Text style = {styles.titleText}>Failed to connect!</Text>
+					</View>
+					<View style = {styles.search}>
 						<TextInput
 							placeholder = "Search users"
 							returnKeyType = "search"
 							onChangeText = {(text) => {this.setState({user: text})}}
 							onEndEditing = {() => {this.setState({loading: false})}}
 						/>
-					</View>
-					<View>
-						<Text>Failed to connect!</Text>
 					</View>
 				</View>
 			);
@@ -56,9 +56,9 @@ class HomeScreen extends Component {
 				<View>
 					
 					<View style = {styles.title}>
-						<Text style = {{fontSize: 40,}}>{this.state.dataSource[0].owner.login}</Text>
+						<Text style = {styles.titleText} > {this.state.dataSource[0].owner.login} </Text>
 					</View>
-					<View>
+					<View style = {styles.search}>
 						<TextInput
 							placeholder = "Search users"
 							returnKeyType = "search"
@@ -73,13 +73,14 @@ class HomeScreen extends Component {
 						renderItem = {({item}) => (
 							<TouchableOpacity
 							onPress = {() => navigate('Info', {repo: item})}
-						focusedOpacity = {1}
-							>
-								<Text style = {styles.list}>
-									<Text style = {styles.item}>{item.name}</Text>
-									<Text style = {styles.star}> &#9733;: {item.stargazers_count}{'\n'}</Text>
-									<Text style = {styles.item}>{item.description}</Text>
-								</Text>
+							focusedOpacity = {1}>
+								<View style = {styles.list}>
+									<Text>
+										<Text style = {styles.item}>{item.name}</Text>
+										<Text style = {styles.star}> &#9733;: {item.stargazers_count}{'\n'}</Text>
+										<Text style = {styles.item}>{item.description}</Text>
+									</Text>
+								</View>
 							</TouchableOpacity>
 							)}
 						/>
@@ -102,13 +103,20 @@ class HomeScreen extends Component {
 				}
 			}
 			catch (error){
-				this.setState({loading: false, connected: false,});
+				this.setState(previousState => {
+        			return { 
+        				dataSource: previousState.dataSource,
+        				loading: false, 
+        			};
+      			});
 			}
-			finally {
-				this.setState({
-					loading: false,
-					dataSource: data,
-				})
+			finally{
+				this.setState(previousState => {
+        			return { 
+        				dataSource: data,
+        				loading: false, 
+        			};
+      			});
 			}
 			})
 			.catch((error) => {
@@ -136,7 +144,15 @@ class infoScreen extends Component {
 	render(){
 		const {params} = this.props.navigation.state;
 		return(
-			<Text>get info from state {params.repo.name}</Text>
+			<Text style = {styles.item}>
+				<Text>Owner: {params.repo.owner.login}{'\n'}</Text>
+				<Text>Name: {params.repo.name}{'\n'}</Text>
+				<Text>Stars: {params.repo.stargazers_count}{'\n'}</Text>
+				<Text>Language: {params.repo.language}{'\n'}</Text>
+				<Text>Forks: {params.repo.forks}{'\n'}</Text>
+				<Text>Homepage: {params.repo.homepage}{'\n'}</Text>
+				<Text>Description: {params.repo.description}</Text>
+			</Text>
 		)
 	}
 }
@@ -149,10 +165,12 @@ const styles = StyleSheet.create({
 	},
 	title: {
 		backgroundColor: 'lightblue',
-		height: 55,
+		minHeight: 55,
 		borderBottomWidth: 1,
-		paddingLeft: 10,
-		paddingBottom: 10,
+		paddingTop: 10,
+	},
+	titleText: {
+		fontSize: 40,
 	},
 	list: {
 		borderStyle: 'solid',
@@ -164,13 +182,17 @@ const styles = StyleSheet.create({
 		backgroundColor: 'ghostwhite',
 	},
 	item: {
-		padding: 10,
 		fontSize: 18,
 		height: 'auto',
 	},
 	star: {
 		fontSize: 18,
 		textAlign: 'right',
+	},
+	search: {
+		height: 30,
+		borderStyle: 'solid',
+		borderBottomWidth: 1,
 	},
 });
 
