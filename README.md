@@ -10,4 +10,4 @@ Run with:
 
 Or
 
-<code>react-native run-ios</code> (coming soon)
+<code>react-native run-ios</code>
