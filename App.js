@@ -44,7 +44,7 @@ class HomeScreen extends Component {
 							placeholder = "Search users"
 							returnKeyType = "search"
 							onChangeText = {(text) => {this.setState({user: text})}}
-							onEndEditing = {() => {this.setState({loading: false})}}
+							onEndEditing = {() => {this.setState({loading: true, connected: true,})}}
 						/>
 					</View>
 				</View>
@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
 		textAlign: 'right',
 	},
 	search: {
-		height: 30,
+		height: 40,
 		borderStyle: 'solid',
 		borderBottomWidth: 1,
 	},
